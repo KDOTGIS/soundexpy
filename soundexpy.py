@@ -1,9 +1,17 @@
 import re
+
 """
 This module encodes a string using Soundex, as described by
 http://en.wikipedia.org/w/index.php?title=Soundex&oldid=466065377
 
 Only strings with the letters A-Z and of length >= 2 are supported.
+
+Modified by KDOTGIS (Kyle Gonterwitz) to add "numdex" function
+numdex of Road Names may be useful as part of a LRS key.  
+
+for Numbered roads, the first 4 numbers are returned padded with zeros
+for named roads, the soundex code is returned.  
+
 """
 
 invalid_re = re.compile("[AEHIOUWY]|[^A-Z]")
@@ -85,6 +93,15 @@ def soundex(s):
         enc += '0'
 
     return enc
+    
+def numdex(s):
+    if s[0] in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']:
+        numerical_re = re.compile("[A-Z]|[^0-9][^0-9][^0-9][^0-9]")
+        s=re.sub(numerical_re,"", s.zfill(4))
+        return s.zfill(4)
+    else:
+        return soundex(s)
+
 
 
 if __name__ == "__main__":
